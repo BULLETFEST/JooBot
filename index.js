@@ -5,12 +5,12 @@ import fb from 'firebase-admin';
 
 // console.log(JSON.parse(process.env.FB_TOKEN));
 
-// fb.initializeApp({
-//   credential: fb.credential.cert(JSON.parse(process.env.FB_TOKEN)),
-//   databaseURL: 'https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app',
-// });
+fb.initializeApp({
+  credential: fb.credential.cert(JSON.parse(process.env.FB_TOKEN)),
+  databaseURL: 'https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app',
+});
 
-// const db = fb.database();
+const db = fb.database();
 
 import express from 'express';
 import bodyParser from 'body-parser';

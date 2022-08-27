@@ -26,10 +26,12 @@ app.use(
 setInterval(async () => {
   const games = await (await db.ref('/').get()).val();
 
-  for (const [key, val] of Object.entries(games)) {
-    // console.log();
-    if (Math.abs(val.time - Date.now()) > 1000 * 60 * 3.5) {
-      await db.ref(`/${key}`).remove();
+  if (Object.entries(games)) {
+    for (const [key, val] of Object.entries(games)) {
+      // console.log();
+      if (Math.abs(val.time - Date.now()) > 1000 * 60 * 3.5) {
+        await db.ref(`/${key}`).remove();
+      }
     }
   }
 }, 1000 * 60);

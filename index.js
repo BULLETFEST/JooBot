@@ -23,10 +23,30 @@ app.use(
   })
 );
 
+setInterval(async () => {
+  const games = await (await db.ref('/').get()).val();
+
+  for (const [key, val] of Object.entries(games)) {
+    // console.log();
+    if (Math.abs(val.time - Date.now()) > 1000 * 60 * 3.5) {
+      await db.ref(`/${key}`).remove();
+    }
+  }
+}, 1000 * 60);
+
 app.get('/', (req, res) => res.status(200));
 
 app.post('/createLobby', async (req, res) => {
   let exists = true;
+
+  if (IsNullOrEmpty(req.body.address) || IsNullOrEmpty(req.body.userId)) {
+    res.send({
+      code: '',
+      success: false,
+      message: 'There has been an error with your client, please restart your game and try again.',
+    });
+    return;
+  }
 
   let generatedId;
 
@@ -46,7 +66,7 @@ app.post('/createLobby', async (req, res) => {
     exists = ref.exists();
   }
 
-  let ref = await db.ref(`/${generatedId}`).set({ address: req.body.address, userId: req.body.userId });
+  await db.ref(`/${generatedId}`).set({ address: req.body.address, userId: req.body.userId, time: Date.now() });
 
   res.send({
     code: generatedId,
@@ -55,9 +75,24 @@ app.post('/createLobby', async (req, res) => {
   });
 });
 
+app.post('/keepLobbyAlive', async (req, res) => {
+  if (IsNullOrEmpty(req.body.code)) return;
+
+  let t = await db.ref(`/${req.body.code}`).get();
+
+  let tVal = await t.val();
+
+  if (!tVal) return;
+
+  db.ref(`/${req.body.code}/time`).set(Date.now());
+
+  res.send({
+    success: true,
+  });
+});
+
 app.post('/joinLobby', async (req, res) => {
   if (req.body.code.match(/\D/)) {
-    console.log('A');
     res.send({
       code: '',
       success: false,
@@ -179,3 +214,11 @@ async function createRole(message) {
   message.reply('Role Created!');
 }
 client.login(process.env.TOKEN);
+
+function IsNullOrEmpty(content) {
+  if (!content) return true;
+
+  content = content.replace(/\s/g, '');
+
+  return content.length == 0;
+}

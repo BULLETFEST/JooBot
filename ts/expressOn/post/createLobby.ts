@@ -40,7 +40,7 @@ export default {
       userId: req.body.userId,
       time: Date.now(),
       type: req.body.type || 'public',
-      players: '1',
+      playerCount: '1',
       gameMode: 'Elimination',
     });
 

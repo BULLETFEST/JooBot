@@ -1,6 +1,7 @@
 node_modules
 .env
 data.json
+js/
 
 # Grabbed from the pnpm repo
 # https://github.com/pnpm/pnpm/blob/main/.gitignore

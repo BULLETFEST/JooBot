@@ -2,9 +2,9 @@
   "name": "joobot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./js/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc --build ./ts && node ./js/index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +17,8 @@
     "firebase": "^9.8.4",
     "firebase-admin": "^11.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  }
 }

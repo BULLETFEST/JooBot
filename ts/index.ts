@@ -125,6 +125,11 @@ let data: Data = {};
 data = JSON.parse(readFileSync('./data.json').toString());
 
 client.on('ready', () => {
+  client.user?.setActivity({
+    type: 'PLAYING',
+    name: 'BULLETFEST',
+  });
+
   console.log('Ready!');
 });
 

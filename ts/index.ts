@@ -209,4 +209,4 @@ async function createRole(message: discord.Message) {
   await message.mentions.members.first()?.roles.add(createdRole);
   message.reply('Role Created!');
 }
-// client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);

@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
-import fb from 'firebase-admin';
 
-const db = fb.database();
 export default {
   run: async function (req: Request, res: Response) {
     if (IsNullOrEmpty(req.body.userId)) return;

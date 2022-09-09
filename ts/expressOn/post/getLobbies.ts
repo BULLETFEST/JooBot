@@ -1,9 +1,7 @@
 // @ts-nocheck
 
 import { Request, Response } from 'express';
-import fb from 'firebase-admin';
 
-const db = fb.database();
 export default {
   run: async function (req: Request, res: Response) {
     let t = await db.ref(`/`).orderByChild('type').equalTo('public').get();

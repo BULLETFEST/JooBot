@@ -17,6 +17,22 @@ global.__dirname = dirname(__filename);
 import { config } from 'dotenv';
 config();
 
+import { Octokit } from '@octokit/core';
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+
+// Will be used sometime in the future.
+async function GetLatestVersion() {
+  const res = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+    owner: 'EliasVal',
+    repo: 'BULLETFEST',
+  });
+
+  // res.data[0].tag_name :)
+}
+
 import fb from 'firebase-admin';
 
 fb.initializeApp({
@@ -25,7 +41,9 @@ fb.initializeApp({
   databaseURL: 'https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app',
 });
 
-const db = fb.database();
+global.db = fb.database();
+global.auth = fb.auth();
+
 setInterval(async () => {
   const games = await (await db.ref('/').get()).val();
 
@@ -191,4 +209,4 @@ async function createRole(message: discord.Message) {
   await message.mentions.members.first()?.roles.add(createdRole);
   message.reply('Role Created!');
 }
-client.login(process.env.TOKEN);
+// client.login(process.env.TOKEN);

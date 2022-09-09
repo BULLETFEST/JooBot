@@ -1,5 +1,8 @@
 import { Client, Collection, Message } from "discord.js";
 
+import { Auth } from "firebase-admin/lib/auth/auth";
+import { Database } from "firebase-admin/lib/database/database";
+
 declare global {
   interface _Client extends Client {
     commands: Collection<string, Command>;
@@ -32,6 +35,9 @@ declare global {
   }
 
   function IsNullOrEmpty(string): boolean
+
+  var db: Database
+  var auth: Auth
 }
 
 export {}

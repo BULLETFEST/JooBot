@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { join, dirname } from 'path';
+import fetch from 'node-fetch';
 
 global.IsNullOrEmpty = function IsNullOrEmpty(content: string) {
   if (!content) return true;
@@ -17,22 +18,6 @@ global.__dirname = dirname(__filename);
 import { config } from 'dotenv';
 config();
 
-import { Octokit } from '@octokit/core';
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
-
-// Will be used sometime in the future.
-async function GetLatestVersion() {
-  const res = await octokit.request('GET /repos/{owner}/{repo}/releases', {
-    owner: 'EliasVal',
-    repo: 'BULLETFEST',
-  });
-
-  // res.data[0].tag_name :)
-}
-
 import fb from 'firebase-admin';
 
 fb.initializeApp({
@@ -45,17 +30,42 @@ global.db = fb.database();
 global.auth = fb.auth();
 
 setInterval(async () => {
-  const games = await (await db.ref('/').get()).val();
+  const games = await (await db.ref('/lobbies/').get()).val();
 
   if (Object.entries(games || {}).length > 0) {
     for (const [key, val] of Object.entries(games)) {
       // @ts-ignore
       if (Math.abs(val.time - Date.now()) > 1000 * 60 * 3.5) {
-        await db.ref(`/${key}`).remove();
+        await db.ref(`/lobbies/${key}`).remove();
       }
     }
   }
 }, 1000 * 60);
+
+import { Octokit } from '@octokit/core';
+
+// Versioning
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+
+async function SetLatestVersion() {
+  const res = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+    owner: 'EliasVal',
+    repo: 'BULLETFEST',
+  });
+
+  await db.ref('/latestVer/').set(res.data[0].tag_name);
+}
+
+// Run every 15 mins
+setInterval(SetLatestVersion, 1000 * 60 * 15);
+SetLatestVersion();
+
+setInterval(() => {
+  fetch('https://glitch247.eliasval.repl.co');
+}, 1000 * 60 * 2.5);
 
 /**
  *
@@ -97,10 +107,17 @@ async function loadExpressEvents() {
             (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString())).default.run
           );
           break;
+        case 'get':
+          app.get(
+            `/${file.split('.')[0]}`,
+            (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString())).default.run
+          );
+          break;
       }
     }
   }
 }
+
 loadExpressEvents();
 
 /**

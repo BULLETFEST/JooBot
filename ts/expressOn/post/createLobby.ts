@@ -16,23 +16,23 @@ export default {
 
     let generatedId;
 
-    let t = await db.ref('/').orderByChild('userId').equalTo(req.body.userId).get();
+    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(req.body.userId).get();
 
     let tVal = await t.val();
     if (tVal != null) {
       for (let key of Object.keys(tVal)) {
-        await db.ref(`/${key}`).set(null);
+        await db.ref(`/lobbies/${key}`).set(null);
       }
     }
     while (exists) {
       generatedId = Math.floor(Math.random() * (9999 - 1000) + 1000);
 
-      let ref = await db.ref(`/${generatedId}`).get();
+      let ref = await db.ref(`/lobbies/${generatedId}`).get();
 
       exists = ref.exists();
     }
 
-    await db.ref(`/${generatedId}`).set({
+    await db.ref(`/lobbies/${generatedId}`).set({
       address: req.body.address,
       userId: req.body.userId,
       time: Date.now(),

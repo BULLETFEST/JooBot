@@ -10,7 +10,7 @@ export default {
       });
       return;
     }
-    let data = await db.ref(`/${req.body.code}`).get();
+    let data = await db.ref(`/lobbies/${req.body.code}`).get();
 
     if (!data.exists()) {
       res.send({

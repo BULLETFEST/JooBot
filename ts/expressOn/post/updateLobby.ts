@@ -2,9 +2,25 @@ import { Request, Response } from 'express';
 
 export default {
   run: async function (req: Request, res: Response) {
-    if (IsNullOrEmpty(req.body.userId)) return;
+    if (IsNullOrEmpty(req.body.token)) {
+      res.send({
+        status: 400,
+        message: 'InvalidForm',
+      });
+      return;
+    }
 
-    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(req.body.userId).get();
+    const [valid, user] = await ValidateToken(req.body.token);
+
+    if (!valid) {
+      res.send({
+        status: 403,
+        message: 'InvalidToken',
+      });
+      return;
+    }
+
+    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(user.uid).get();
 
     let tVal = await t.val();
     if (tVal != null) {
@@ -17,5 +33,9 @@ export default {
         });
       }
     }
+
+    res.send({
+      status: 200,
+    });
   },
 };

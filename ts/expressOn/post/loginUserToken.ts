@@ -17,20 +17,10 @@ export default {
         status: 401,
         message: 'InvalidToken',
       });
+    } else {
+      res.send({
+        status: 200,
+      });
     }
-
-    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(user.uid).get();
-
-    let tVal = await t.val();
-    if (tVal != null) {
-      for (let key of Object.keys(tVal)) {
-        // await db.ref(`/${key}`).set(null);
-        await db.ref(`/lobbies/${key}/time`).set(Date.now());
-      }
-    }
-
-    res.send({
-      success: true,
-    });
   },
 };

@@ -4,19 +4,28 @@ export default {
   run: async function (req: Request, res: Response) {
     let exists = true;
 
-    if (IsNullOrEmpty(req.body.address) || IsNullOrEmpty(req.body.userId)) {
+    if (IsNullOrEmpty(req.body.address) || IsNullOrEmpty(req.body.token)) {
       res.send({
-        code: '',
-        success: false,
-        message:
-          'There has been an error with your client, please wait a moment and try again. If the problem persists try restarting your client.',
+        status: 400,
+        message: 'InvalidForm',
       });
+      return;
+    }
+
+    const [valid, user] = await ValidateToken(req.body.token);
+
+    if (!valid) {
+      res.send({
+        status: 401,
+        message: 'InvalidToken',
+      });
+
       return;
     }
 
     let generatedId;
 
-    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(req.body.userId).get();
+    let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(user.uid).get();
 
     let tVal = await t.val();
     if (tVal != null) {
@@ -34,7 +43,7 @@ export default {
 
     await db.ref(`/lobbies/${generatedId}`).set({
       address: req.body.address,
-      userId: req.body.userId,
+      userId: user.uid,
       time: Date.now(),
       type: req.body.type || 'public',
       playerCount: '1',
@@ -42,9 +51,8 @@ export default {
     });
 
     res.send({
-      code: generatedId,
-      success: true,
-      message: '',
+      status: 200,
+      data: generatedId,
     });
   },
 };

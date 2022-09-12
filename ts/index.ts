@@ -11,6 +11,18 @@ global.IsNullOrEmpty = function IsNullOrEmpty(content: string) {
   return content.length == 0;
 };
 
+global.GetTokenByUid = async function GetTokenByUid(uid: string) {
+  let token = await auth.createCustomToken(uid).catch(() => null);
+
+  return token;
+};
+
+global.ValidateToken = async function ValidateToken(token: string) {
+  let res = await auth.verifyIdToken(token);
+
+  return [res != null, res];
+};
+
 const __filename = fileURLToPath(import.meta.url);
 
 global.__dirname = dirname(__filename);
@@ -18,16 +30,29 @@ global.__dirname = dirname(__filename);
 import { config } from 'dotenv';
 config();
 
-import fb from 'firebase-admin';
+import fb_admin from 'firebase-admin';
+import { initializeApp } from 'firebase/app';
+import * as clientAuth from 'firebase/auth';
 
-fb.initializeApp({
+fb_admin.initializeApp({
   // @ts-ignore
-  credential: fb.credential.cert(JSON.parse(process.env.FB_TOKEN)),
+  credential: fb_admin.credential.cert(JSON.parse(process.env.FB_TOKEN)),
   databaseURL: 'https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app',
 });
 
-global.db = fb.database();
-global.auth = fb.auth();
+initializeApp({
+  apiKey: 'AIzaSyBuwubU_zsNbU3yLPGpwF6RWuMIGuPT9HI',
+  authDomain: 'bulletfest-805c3.firebaseapp.com',
+  databaseURL: 'https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'bulletfest-805c3',
+  storageBucket: 'bulletfest-805c3.appspot.com',
+  messagingSenderId: '796405154968',
+  appId: '1:796405154968:web:7955939163ed78f20fbced',
+});
+
+global.db = fb_admin.database();
+global.auth = fb_admin.auth();
+global.clientAuth = clientAuth;
 
 setInterval(async () => {
   const games = await (await db.ref('/lobbies/').get()).val();
@@ -231,4 +256,5 @@ async function createRole(message: discord.Message) {
   await message.mentions.members.first()?.roles.add(createdRole);
   message.reply('Role Created!');
 }
-client.login(process.env.TOKEN);
+
+// client.login(process.env.TOKEN);

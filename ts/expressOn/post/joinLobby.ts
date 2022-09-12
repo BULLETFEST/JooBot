@@ -4,9 +4,8 @@ export default {
   run: async function (req: Request, res: Response) {
     if (IsNullOrEmpty(req.body.code) || req.body.code.match(/\D/)) {
       res.send({
-        code: '',
-        success: false,
-        message: 'Invalid room code!',
+        status: 400,
+        message: 'InvalidForm',
       });
       return;
     }
@@ -14,8 +13,7 @@ export default {
 
     if (!data.exists()) {
       res.send({
-        code: '',
-        success: false,
+        status: 404,
         message: 'This lobby does not exist!',
       });
       return;
@@ -24,9 +22,9 @@ export default {
     let val = await data.val();
 
     res.send({
-      code: val.address,
-      success: true,
+      status: 200,
       message: '',
+      data: val.address,
     });
   },
 };

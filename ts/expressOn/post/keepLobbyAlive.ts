@@ -30,7 +30,7 @@ export default {
     }
 
     res.send({
-      success: true,
+      status: 200,
     });
   },
 };

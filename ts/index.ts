@@ -17,8 +17,9 @@ global.GetTokenByUid = async function GetTokenByUid(uid: string) {
   return token;
 };
 
+// @ts-ignore
 global.ValidateToken = async function ValidateToken(token: string) {
-  let res = await auth.verifyIdToken(token);
+  let res = await auth.verifyIdToken(token).catch((e) => null);
 
   return [res != null, res];
 };
@@ -257,4 +258,4 @@ async function createRole(message: discord.Message) {
   message.reply('Role Created!');
 }
 
-// client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);

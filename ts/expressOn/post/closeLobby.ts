@@ -6,11 +6,13 @@ export default {
 
     const [valid, user] = await ValidateToken(req.body.token);
 
-    if (!valid)
+    if (!valid) {
       res.send({
         status: 401,
         message: 'InvalidToken',
       });
+      return;
+    }
 
     let t = await db.ref('/lobbies/').orderByChild('userId').equalTo(user.uid).get();
 

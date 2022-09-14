@@ -3,7 +3,7 @@ import { Client, Collection, Message } from "discord.js";
 import { Auth as adminAuth }  from "firebase-admin/lib/auth/auth";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { Database } from "firebase-admin/lib/database/database";
-import { Auth as clientAuth } from "firebase/auth";
+import { Auth, Auth as clientAuth } from "firebase/auth";
 
 declare global {
   interface _Client extends Client {
@@ -42,7 +42,7 @@ declare global {
 
   var db: Database
   var auth: adminAuth
-  var clientAuth: typeof import("../node_modules/firebase/auth/dist/auth/index")
+  var clientAuth: typeof import("firebase/auth")
 }
 
 export {}

@@ -11,6 +11,8 @@ export default {
       return;
     }
 
+    global.clientAuth.setPersistence(global.clientAuth.getAuth(), global.clientAuth.browserLocalPersistence);
+
     const user: UserCredential | null = await global.clientAuth
       .signInWithEmailAndPassword(global.clientAuth.getAuth(), req.body.email, req.body.password)
       .catch((e) => {

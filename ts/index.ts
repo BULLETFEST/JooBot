@@ -261,4 +261,4 @@ async function createRole(message: discord.Message) {
   message.reply('Role Created!');
 }
 
-client.login(process.env.TOKEN);
+// client.login(process.env.TOKEN);

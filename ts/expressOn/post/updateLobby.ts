@@ -30,6 +30,7 @@ export default {
           gameMode: req.body.gameMode,
           playerCount: req.body.playerCount,
           type: req.body.type,
+          lobbySize: req.body.lobbySize,
         });
       }
     }

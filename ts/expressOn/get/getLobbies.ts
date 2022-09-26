@@ -13,11 +13,12 @@ export default {
             playerCount: m[1].playerCount || 1,
             gameMode: m[1].gameMode || 'Elimination',
             started: m[1].started || false,
+            lobbySize: m[1].lobbySize || 4,
           };
 
           return o;
         })
-        .filter((x) => x.playerCount < 4 && !x.started),
+        .filter((x) => x.playerCount < x.lobbySize && !x.started),
     });
   },
 };

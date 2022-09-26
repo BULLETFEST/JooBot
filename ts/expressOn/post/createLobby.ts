@@ -48,6 +48,7 @@ export default {
       type: req.body.type || 'public',
       playerCount: '1',
       gameMode: 'Elimination',
+      lobbySize: '4',
     });
 
     res.send({

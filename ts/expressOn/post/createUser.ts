@@ -25,9 +25,13 @@ export default {
 
     if (user == null) return;
 
+    const t = await GetTokenByUid(user.uid);
+
+    await global.db.ref(`users/${user.uid}/token`).set(t);
+
     res.send({
       status: 200,
-      data: GetTokenByUid(user.uid),
+      data: t,
     });
   },
 };

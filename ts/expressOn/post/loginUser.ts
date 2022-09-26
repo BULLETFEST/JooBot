@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { UserCredential } from 'firebase/auth';
 
 export default {
@@ -11,7 +11,7 @@ export default {
       return;
     }
 
-    global.clientAuth.setPersistence(global.clientAuth.getAuth(), global.clientAuth.browserLocalPersistence);
+    global.clientAuth.setPersistence(global.clientAuth.getAuth(), global.clientAuth.inMemoryPersistence);
 
     const user: UserCredential | null = await global.clientAuth
       .signInWithEmailAndPassword(global.clientAuth.getAuth(), req.body.email, req.body.password)
@@ -26,9 +26,19 @@ export default {
 
     if (user == null) return;
 
+    const ref = await global.db.ref(`users/${user.user.uid}`).get();
+    let t;
+    if (ref.exists()) {
+      let v = await ref.val();
+      t = v.token;
+    } else {
+      t = await GetTokenByUid(user.user.uid);
+      await global.db.ref(`users/${user.user.uid}/token`).set(t);
+    }
+
     res.send({
       status: 200,
-      data: await user?.user.getIdToken(),
+      data: t,
     });
   },
 };

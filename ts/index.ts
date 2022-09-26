@@ -19,9 +19,12 @@ global.GetTokenByUid = async function GetTokenByUid(uid: string) {
 
 // @ts-ignore
 global.ValidateToken = async function ValidateToken(token: string) {
-  let res = await auth.verifyIdToken(token).catch((e) => null);
-
-  return [res != null, res];
+  const ref = await db.ref('users').orderByChild('token').equalTo(token).get();
+  let u = null;
+  if (ref.exists()) {
+    u = await auth.getUser(Object.keys(await ref.val())[0]);
+  }
+  return [ref.exists(), u];
 };
 
 const __filename = fileURLToPath(import.meta.url);

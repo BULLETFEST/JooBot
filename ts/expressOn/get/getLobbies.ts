@@ -6,7 +6,9 @@ export default {
   run: async function (req: Request, res: Response) {
     let t = await db.ref(`/lobbies/`).orderByChild('type').equalTo('public').get();
     res.send({
-      Items: Object.entries((await t.val()) || {})
+      status: 200,
+      data: Object.entries((await t.val()) || {})
+        .filter((m) => m[1].playerCount < m[1].lobbySize && !m[1].started)
         .map((m) => {
           const o = {
             code: m[0],
@@ -17,8 +19,7 @@ export default {
           };
 
           return o;
-        })
-        .filter((x) => x.playerCount < x.lobbySize && !x.started),
+        }),
     });
   },
 };

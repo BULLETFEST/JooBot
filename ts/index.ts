@@ -133,13 +133,15 @@ async function loadExpressEvents() {
         case 'post':
           app.post(
             `/${file.split('.')[0]}`,
-            (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString())).default.run
+            (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString()))
+              .default.run
           );
           break;
         case 'get':
           app.get(
             `/${file.split('.')[0]}`,
-            (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString())).default.run
+            (await import(pathToFileURL(join(__dirname, 'expressOn', dir, file)).toString()))
+              .default.run
           );
           break;
       }
@@ -163,7 +165,7 @@ import * as discord from 'discord.js';
 
 // @ts-ignore
 const client: _Client = new discord.Client({
-  intents: ['GUILD_MESSAGES', 'GUILD_MEMBERS', 'DIRECT_MESSAGES', 'GUILDS'],
+  intents: ['GuildMembers', 'GuildMessages', 'DirectMessages', 'Guilds'],
 });
 
 let data: Data = {};
@@ -172,7 +174,7 @@ data = JSON.parse(readFileSync('./data.json').toString());
 
 client.on('ready', () => {
   client.user?.setActivity({
-    type: 'PLAYING',
+    type: discord.ActivityType.Playing,
     name: 'BULLETFEST',
   });
 

@@ -1,3 +1,5 @@
-npm i --save
+npm i pnpm --save
+
+pnpm i
 
 node .

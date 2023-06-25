@@ -11,7 +11,10 @@ export default {
       return;
     }
 
-    global.clientAuth.setPersistence(global.clientAuth.getAuth(), global.clientAuth.inMemoryPersistence);
+    global.clientAuth.setPersistence(
+      global.clientAuth.getAuth(),
+      global.clientAuth.inMemoryPersistence
+    );
 
     const user: UserCredential | null = await global.clientAuth
       .signInWithEmailAndPassword(global.clientAuth.getAuth(), req.body.email, req.body.password)
@@ -42,3 +45,4 @@ export default {
     });
   },
 };
+

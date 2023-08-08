@@ -64,7 +64,7 @@ setInterval(async () => {
   if (Object.entries(games || {}).length > 0) {
     for (const [key, val] of Object.entries(games)) {
       // @ts-ignore
-      if (Math.abs(val.time - Date.now()) > 1000 * 60 * 3.5) {
+      if (Math.abs((val.time ?? 0) - Date.now()) > 1000 * 60 * 3.5) {
         await db.ref(`/lobbies/${key}`).remove();
       }
     }
@@ -263,4 +263,4 @@ async function createRole(message: discord.Message) {
   message.reply('Role Created!');
 }
 
-// client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);

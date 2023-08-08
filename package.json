@@ -4,8 +4,7 @@
   "description": "",
   "main": "./js/index.js",
   "scripts": {
-    "start": "tsc --build ./ts && node --trace-warnings ./js/index.js",
-    "preinstall": "npx only-allow pnpm"
+    "start": "tsc --build ./ts && node --trace-warnings ./js/index.js"
   },
   "keywords": [],
   "author": "",
